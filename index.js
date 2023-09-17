@@ -1,4 +1,7 @@
 const express = require("express");
+const db = require("./db/db.js");
+
+db.configureTables();
 
 const app = express();
 
