@@ -19,18 +19,23 @@ work as well. It is recomended to have admin privileges.
 
 
 ### To run the app
+1. Clone the repository to your machine:
+ Unix : `~$ git clone https://github.com/mihna123/5-cloudy-dayz.git`  
 
-1. Create a database using postgreSQL ([documentation for that](https://www.postgresql.org/docs/16/tutorial-createdb.html))
+2. Create a database using postgreSQL ([documentation for that](https://www.postgresql.org/docs/16/tutorial-createdb.html))
 
-2. Make sure to replace all environment values in the ".env" file (You can use the actual anvironment variables but i find this easier when developing) since these values are used to access the database. The most important ones are  
-> PGUSER (Name of the user that can access the database - default is postgres)
-> PGPASSWORD (Password for that user)
-> PGDATABASE (Name of the database)
+3. Go to the repository folder
+Unix: `~$ cd route/to/repo/5-cloudy-dayz`
 
-3. Run the index.js file with the command:  
-`$ node index.js`
+4. Replace all environment values in the ".env" file since these values are used to access the database. The most important ones are  
+`PGUSER` (Name of the user that can access the database - default is postgres) 
+`PGPASSWORD` (Password for that user)  
+`PGDATABASE` (Name of the database)  
 
-4. The server is ready to listen to requests now
+5. Run the index.js file with the command:  
+`~$ node index.js`
+
+6. The server is ready to listen to requests now
 
 ### Tech stack
 
