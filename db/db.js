@@ -35,6 +35,7 @@ exports.configureTables = async () => {
     }
 }
 
+
 const tableExists = async (name) => {
     try{
         const res = await pool.query('SELECT EXISTS (\
@@ -45,6 +46,26 @@ const tableExists = async (name) => {
                             tablename = $1::text\
         )',[name]);
         return res.rows[0].exists;
+    }
+    catch(err) {
+        console.log(err);
+    }
+}
+
+exports.newOrder = async (order) => {
+    try {
+        const res = await pool.query('INSERT INTO orders \
+                                        VALUES($1, $2, NOW(), $3, $4, $5 ,$6, $7, $8)',
+                                        [order.id,
+                                         order.currencyPair,
+                                         order.type,
+                                         order.price,
+                                         order.quantity,
+                                         0,
+                                         "OPEN",
+                                         []]);
+        console.log(res);
+
     }
     catch(err) {
         console.log(err);

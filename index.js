@@ -5,7 +5,12 @@ db.configureTables();
 
 const app = express();
 
+app.use(express.json());
+
 app.post('/order', (req,res) => {
+    const order = req.body;
+    console.log(req.body);
+    db.newOrder(order);
     res.send('order endpoint');
 });
 
