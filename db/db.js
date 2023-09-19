@@ -89,7 +89,7 @@ exports.newOrder = async (order) => {
 const createOrders = async () => {
     try {
         const res = await pool.query('CREATE TABLE orders (\
-                                        "id"                 int,\
+                                        "id"                 int primary key,\
                                         "currencyPair"       varchar(10),\
                                         "createdDateTime"    date,\
                                         "type"               varchar(4),\
@@ -109,7 +109,7 @@ const createOrders = async () => {
 const createTrades = async () => {
     try {
         const res = await pool.query('CREATE TABLE trades (\
-                                        "id"                  int,\
+                                        "id"                  serial primary key,\
                                         "buyOrderId"          int,\
                                         "sellOrderId"         int,\
                                         "createdDateTime"     date,\
