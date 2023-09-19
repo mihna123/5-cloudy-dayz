@@ -89,15 +89,15 @@ exports.newOrder = async (order) => {
 const createOrders = async () => {
     try {
         const res = await pool.query('CREATE TABLE orders (\
-                                        id                 int,\
-                                        currencypair       varchar(10),\
-                                        createddatetime    date,\
-                                        type               varchar(4),\
-                                        price              double precision,\
-                                        quantity           double precision,\
-                                        filledquantity     double precision,\
-                                        status             varchar(6),\
-                                        trades             int[])');
+                                        "id"                 int,\
+                                        "currencyPair"       varchar(10),\
+                                        "createdDateTime"    date,\
+                                        "type"               varchar(4),\
+                                        "price"              double precision,\
+                                        "quantity"           double precision,\
+                                        "filledQuantity"     double precision,\
+                                        "orderStatus"        varchar(6),\
+                                        "trades"             int[])');
         console.log('Table orders created succesfully');
         console.log();
     }
@@ -109,12 +109,12 @@ const createOrders = async () => {
 const createTrades = async () => {
     try {
         const res = await pool.query('CREATE TABLE trades (\
-                                        id          int,\
-                                        buyorderid  int,\
-                                        sellorderid int,\
-                                        createddatetime     date,\
-                                        price               double precision,\
-                                        quantity            double precision)');
+                                        "id"                  int,\
+                                        "buyOrderId"          int,\
+                                        "sellOrderId"         int,\
+                                        "createdDateTime"     date,\
+                                        "price"               double precision,\
+                                        "quantity"            double precision)');
         console.log('Table trades created succesfully');
         console.log();
     }
@@ -126,8 +126,8 @@ const createTrades = async () => {
 const createOrderbook = async () => {
     try {
         const res = await pool.query('CREATE TABLE orderbook (\
-                                        buyorders       int[],\
-                                        sellorders      int[])');
+                                        "buyOrders"       int[],\
+                                        "sellOrders"      int[])');
         console.log('Table orderbook created succesfully');
         console.log();
     }
