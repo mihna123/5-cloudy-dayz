@@ -52,6 +52,16 @@ const tableExists = async (name) => {
     }
 }
 
+exports.getOrderById = async (id) => {
+    try {
+        const res = await pool.query('SELECT * FROM orders WHERE id = $1',[id]);
+        return res.rows[0];
+    }
+    catch(err) {
+        console.log(err);
+    }
+}
+
 exports.newOrder = async (order) => {
     try {
         const res = await pool.query('INSERT INTO orders \
@@ -64,7 +74,7 @@ exports.newOrder = async (order) => {
                                          0,
                                          "OPEN",
                                          []]);
-        console.log(res);
+        console.log(`Order saved succesfully`);
 
     }
     catch(err) {
