@@ -64,6 +64,10 @@ exports.getOrderById = async (id) => {
 
 exports.newOrder = async (order) => {
     try {
+        const existingOrder = await exports.getOrderById(order.id);
+        if(existingOrder !== undefined){
+            throw new Error(`Order with an id=${order.id} already exists`);
+        }
         const res = await pool.query('INSERT INTO orders \
                                         VALUES($1, $2, NOW(), $3, $4, $5 ,$6, $7, $8)',
                                         [order.id,
@@ -74,11 +78,11 @@ exports.newOrder = async (order) => {
                                          0,
                                          "OPEN",
                                          []]);
-        console.log(`Order saved succesfully`);
-
+        return [true, "Order saved succesfully"];
     }
     catch(err) {
         console.log(err);
+        return [false, `Error: Order with id=${order.id} already exists!`];
     }
 }
 

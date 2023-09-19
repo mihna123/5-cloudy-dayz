@@ -9,17 +9,22 @@ app.use(express.json());
 
 app.post('/order', async (req,res) => {
     const order = req.body;
-    const [isValid, msg] = isOrderValid(order);
+    const [isValid, valmsg] = isOrderValid(order);
     if(!isValid){
-        const err = "ERROR: " + msg;
+        const err = "ERROR: " + valmsg;
         console.log(err);
         res.status(400).send(err);
         return;
     }
-    await db.newOrder(order);
-    const resBody = await db.getOrderById(order.id);
-    res.status(201).send(resBody);
-    console.log('Response sent...');
+    const [success,sucmsg] = await db.newOrder(order);
+    if(success){
+        const resBody = await db.getOrderById(order.id);
+        res.status(201).send(resBody);
+        console.log(sucmsg);
+    }
+    else {
+        res.status(400).send(sucmsg);
+    }
 });
 
 app.get('/orderbook', (req,res) => {
