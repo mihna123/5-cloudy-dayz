@@ -8,7 +8,6 @@ const pool = new pg.Pool();
 exports.configureTables = async () => {
     const ordersExist = await tableExists('orders');
     const tradesExist = await tableExists('trades');
-    const orderbookExist = await tableExists('orderbook');
     
     if(ordersExist === true){
         console.log("Table orders already exists, continuing...");
@@ -24,14 +23,6 @@ exports.configureTables = async () => {
     else{
         console.log("Table trades doesn't exist, creating table...");
         await createTrades();
-    }
-
-    if(orderbookExist === true){
-        console.log("Table orderbook already exists, continuing...");
-    }
-    else{
-        console.log("Table orderbook doesn't exists, creating table...");
-        await createOrderbook();
     }
 }
 
@@ -190,23 +181,3 @@ const createTrades = async () => {
         console.log(err);
     }
 }
-
-const createOrderbook = async () => {
-    try {
-        const res = await pool.query('CREATE TABLE orderbook (\
-                                        "buyOrders"       int[],\
-                                        "sellOrders"      int[])');
-        console.log('Table orderbook created succesfully');
-        console.log();
-    }
-    catch(err){
-        console.log(err);
-    }
-}
-
-
-
-
-
-
-
