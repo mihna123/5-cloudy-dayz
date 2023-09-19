@@ -35,6 +35,82 @@ exports.configureTables = async () => {
     }
 }
 
+exports.getOrderById = async (id) => {
+    try {
+        const res = await pool.query('SELECT * FROM orders WHERE id = $1',[id]);
+        return res.rows[0];
+    }
+    catch(err) {
+        console.log(err);
+    }
+}
+
+exports.newOrder = async (order) => {
+    try {
+        let filledQuantity = 0;
+        let orderStatus = "OPEN";
+        let relevantOrders;
+        if(order.type === "BUY"){
+            relevantOrders = await pool.query("SELECT * FROM orders WHERE\
+                                               type = 'SELL' AND \"orderStatus\" = 'OPEN' AND price <= $1",[order.price]);
+        }
+        else {
+            relevantOrders = await pool.query("SELECT * FROM orders WHERE\
+                                               type = 'BUY' AND \"orderStatus\" = 'OPEN' AND price >= $1",[order.price]);
+        }
+        const n = relevantOrders.rowCount;
+        relevantOrders = relevantOrders.rows;
+        let i = 0;
+        while(order.quantity !== filledQuantity && i < n){
+            let relevantOrderQuantity = relevantOrders[i].quantity - relevantOrders[i].filledQuantity;
+            let neededQuantity = order.quantity - filledQuantity;
+            if(relevantOrderQuantity > neededQuantity) relevantOrderQuantity = neededQuantity;
+            filledQuantity += relevantOrderQuantity;
+            if(filledQuantity >= order.quantity){
+                filledQuantity = order.quantity;
+                orderStatus = "CLOSED";
+            }
+            const relevantOrderId = relevantOrders[i].id;
+            const relevantOrderPrice = relevantOrders[i].price;
+            const exchangedQuantity = relevantOrderQuantity;
+            relevantOrderQuantity += relevantOrders[i].filledQuantity;
+            let relevantOrderStatus = "OPEN";
+            if(relevantOrderQuantity >= relevantOrders[i].quantity) relevantOrderStatus = "CLOSED";
+
+            await pool.query("UPDATE orders SET \
+                                \"filledQuantity\" = $1, \
+                                \"orderStatus\" = $2 \
+                                WHERE id = $3",[relevantOrderQuantity,relevantOrderStatus,relevantOrderId]);
+            let buyId,sellId;
+            if(order.type == "BUY"){
+                buyId = order.id;
+                sellId = relevantOrderId;
+            }
+            else {
+                buyId = relevantOrderId;
+                sellId = order.id;
+            }
+
+            await pool.query("INSERT INTO trades \
+                                VALUES(DEFAULT,$1,$2,NOW(),$3,$4)",
+                                [buyId,sellId,relevantOrderPrice,exchangedQuantity]);
+            i += 1;
+        }
+        await pool.query('INSERT INTO orders \
+                            VALUES($1, $2, NOW(), $3, $4, $5 ,$6, $7, $8)',
+                            [order.id,
+                             order.currencyPair,
+                             order.type,
+                             order.price,
+                             order.quantity,
+                             filledQuantity,
+                             orderStatus,
+                             []]);
+    }
+    catch(err) {
+        throw err;
+    }
+}
 
 const tableExists = async (name) => {
     try{
@@ -49,34 +125,6 @@ const tableExists = async (name) => {
     }
     catch(err) {
         console.log(err);
-    }
-}
-
-exports.getOrderById = async (id) => {
-    try {
-        const res = await pool.query('SELECT * FROM orders WHERE id = $1',[id]);
-        return res.rows[0];
-    }
-    catch(err) {
-        console.log(err);
-    }
-}
-
-exports.newOrder = async (order) => {
-    try {
-        const res = await pool.query('INSERT INTO orders \
-                                        VALUES($1, $2, NOW(), $3, $4, $5 ,$6, $7, $8)',
-                                        [order.id,
-                                         order.currencyPair,
-                                         order.type,
-                                         order.price,
-                                         order.quantity,
-                                         0,
-                                         "OPEN",
-                                         []]);
-    }
-    catch(err) {
-        throw err;
     }
 }
 
