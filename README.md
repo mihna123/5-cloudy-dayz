@@ -1,5 +1,11 @@
 # 5-cloudy-dayz
 
+### Go To
++ [Description](#description)  
++ [Environment](#environment)  
++ [Installation](#installation)   
++ [Tech stack](#tech-stack)  
+
 ### Description
 
 Repository for the Levi9 [5 days in cloud](https://5danauoblacima.com/) challenge
@@ -45,9 +51,9 @@ Development OS for the app is a GNU/Linux Trisquel OS so it would be most simple
 
 ### Tech stack
 
-+ Nodejs
-+ Express
-+ PostgreSQL
++ **Nodejs** - _used for the whole backend because of its simplicity_
++ **Express** - _used for the REST api, very fast and good for development_
++ **PostgreSQL** - _used for storing data, open source solution and very reliable_
 
 
 
