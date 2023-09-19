@@ -31,9 +31,17 @@ app.get('/orderbook', (req,res) => {
     res.send('orderbook endpoint');
 });
 
-app.get('/order/:id', (req,res) => {
-    const body = 'Order by id: ' + req.params.id;
-    res.send(body);
+app.get('/order/:id', async (req,res) => {
+    const id = req.params.id;
+    const order = await db.getOrderById(id);
+    if(order != undefined){
+        console.log(`Order with id=${id} has been sent...`);
+        res.status(200).send(order);
+    }
+    else {
+        console.error(`Client tried getting order that doesn't exist`);
+        res.status(400).send(`Order with id=${id} doesn't exist`);
+    }
 });
 
 app.delete('/order/all', (req,res) => {
