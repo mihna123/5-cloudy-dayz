@@ -112,6 +112,32 @@ exports.newOrder = async (order) => {
     }
 }
 
+exports.getOrderBook = async () => {
+    try {
+        const buyOrders = [];
+        const sellOrders = [];
+        const openOrders = await pool.query("SELECT * FROM orders\
+                                            WHERE \"orderStatus\" = 'OPEN'");
+        openOrders.rows.forEach((order) => {
+            let relevantOrders = (order.type === "BUY")? buyOrders : sellOrders;
+
+            const equalPriceOrder = relevantOrders.find((o) => o.price === order.price);
+            if(equalPriceOrder !== undefined){
+                equalPriceOrder.quantity += order.quantity;
+            }
+            else {
+                relevantOrders.push({price: order.price, quantity: order.quantity});
+            }
+        });
+
+        return {buyOrders, sellOrders}
+
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
 const tableExists = async (name) => {
     try{
         const res = await pool.query('SELECT EXISTS (\

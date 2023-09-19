@@ -20,13 +20,21 @@ app.post('/order', async (req,res) => {
         console.log("New order created");
     } 
     catch(err) {
-        res.status(400).send("Error: " + err.detail);
+        res.status(400).send(err);
         console.log(err);
     }
 });
 
-app.get('/orderbook', (req,res) => {
-    res.send('orderbook endpoint');
+app.get('/orderbook', async (req,res) => {
+    try {
+        const result = await db.getOrderBook();        
+        res.status(200).send(result);
+        console.log("Orderbook sent");
+    }
+    catch(err) {
+        res.status(400).send(err);
+        console.log(err);
+    }
 });
 
 app.get('/order/:id', async (req,res) => {
