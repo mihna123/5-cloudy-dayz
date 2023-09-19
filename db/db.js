@@ -129,6 +129,16 @@ exports.getOrderBook = async () => {
     }
 }
 
+exports.deleteAll = async () => {
+    try {
+        await pool.query("DELETE FROM orders");
+        await pool.query("DELETE FROM trades");
+    } 
+    catch(err){
+        throw err;
+    }
+}
+
 const tableExists = async (name) => {
     try{
         const res = await pool.query('SELECT EXISTS (\

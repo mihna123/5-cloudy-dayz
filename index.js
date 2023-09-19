@@ -50,8 +50,15 @@ app.get('/order/:id', async (req,res) => {
     }
 });
 
-app.delete('/order/all', (req,res) => {
-    res.send('This should delete all');
+app.delete('/order/all', async (req,res) => {
+    try {
+        await db.deleteAll();
+        console.log("Deleting all data...");
+        res.status(200).send("Deleted all data");
+    } 
+    catch(err) {
+        console.error(err);
+    }
 });
 
 db.configureTables().then(() => {
