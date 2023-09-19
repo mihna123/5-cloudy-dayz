@@ -1,10 +1,7 @@
 const express = require("express");
 const db = require("./db/db.js");
 
-db.configureTables();
-
 const app = express();
-
 app.use(express.json());
 
 app.post('/order', async (req,res) => {
@@ -49,8 +46,10 @@ app.delete('/order/all', (req,res) => {
     res.send('This should delete all');
 });
 
-app.listen(3000, () => {
-    console.log('Listening on port 3000...');
+db.configureTables().then(() => {
+    app.listen(3000, () => {
+        console.log('Listening on port 3000...');
+    });
 });
 
 
