@@ -29,10 +29,13 @@ exports.configureTables = async () => {
 exports.getOrderById = async (id) => {
     try {
         const res = await pool.query('SELECT * FROM orders WHERE id = $1',[id]);
+        if (res.rows[0] === undefined) {
+            throw new Error(`There is no order with the id=${id}`);
+        }
         return res.rows[0];
     }
     catch(err) {
-        console.log(err);
+        throw err;
     }
 }
 

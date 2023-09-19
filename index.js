@@ -38,15 +38,13 @@ app.get('/orderbook', async (req,res) => {
 });
 
 app.get('/order/:id', async (req,res) => {
-    const id = req.params.id;
-    const order = await db.getOrderById(id);
-    if(order != undefined){
-        console.log(`Order with id=${id} has been sent...`);
+    try {
+        const id = req.params.id;
+        const order = await db.getOrderById(id);
         res.status(200).send(order);
     }
-    else {
-        console.error(`Client tried getting order that doesn't exist`);
-        res.status(400).send(`Order with id=${id} doesn't exist`);
+    catch(err){
+        res.status(400).send(err + "");
     }
 });
 
