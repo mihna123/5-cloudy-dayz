@@ -16,14 +16,15 @@ app.post('/order', async (req,res) => {
         res.status(400).send(err);
         return;
     }
-    const [success,sucmsg] = await db.newOrder(order);
-    if(success){
+    try {
+        await db.newOrder(order);
         const resBody = await db.getOrderById(order.id);
         res.status(201).send(resBody);
-        console.log(sucmsg);
-    }
-    else {
-        res.status(400).send(sucmsg);
+        console.log("New order created");
+    } 
+    catch(err) {
+        res.status(400).send("Error: " + err.detail);
+        console.log(err);
     }
 });
 
