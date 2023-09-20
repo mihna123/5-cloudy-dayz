@@ -167,7 +167,7 @@ const createOrders = async () => {
         const res = await pool.query('CREATE TABLE orders (\
                                         "id"                 int primary key,\
                                         "currencyPair"       varchar(10),\
-                                        "createdDateTime"    date,\
+                                        "createdDateTime"    timestamp,\
                                         "type"               varchar(4),\
                                         "price"              double precision,\
                                         "quantity"           double precision,\
