@@ -45,6 +45,7 @@ exports.newOrder = async (order) => {
         let orderStatus = "OPEN";
         let relevantOrders;
         let sortf;
+        const tradeIds = [];
         if(order.type === "BUY"){
             relevantOrders = await pool.query("SELECT * FROM orders WHERE\
                                                type = 'SELL' AND \"orderStatus\" = 'OPEN' AND price <= $1",[order.price]);
@@ -89,9 +90,17 @@ exports.newOrder = async (order) => {
                 sellId = order.id;
             }
 
-            await pool.query("INSERT INTO trades \
-                                VALUES(DEFAULT,$1,$2,NOW(),$3,$4)",
+            let tradeId = await pool.query("INSERT INTO trades \
+                                VALUES(DEFAULT,$1,$2,NOW(),$3,$4)\
+                                RETURNING id",
                                 [buyId,sellId,relevantOrderPrice,exchangedQuantity]);
+            tradeId = tradeId.rows[0].id;
+            const relOrderTradeIds = relevantOrders[i].trades;
+            relOrderTradeIds.push(tradeId);
+            tradeIds.push(tradeId);
+            await pool.query('UPDATE orders\
+                                SET trades = $1\
+                                WHERE id = $2',[relOrderTradeIds,relevantOrderId]);
             i += 1;
         }
         await pool.query('INSERT INTO orders \
@@ -103,7 +112,7 @@ exports.newOrder = async (order) => {
                              order.quantity,
                              filledQuantity,
                              orderStatus,
-                             []]);
+                             tradeIds]);
     }
     catch(err) {
         throw err;
