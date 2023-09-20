@@ -114,13 +114,13 @@ exports.getOrderBook = async () => {
                                             WHERE \"orderStatus\" = 'OPEN'");
         openOrders.rows.forEach((order) => {
             let relevantOrders = (order.type === "BUY")? buyOrders : sellOrders;
-
             const equalPriceOrder = relevantOrders.find((o) => o.price === order.price);
+            realOrderQuantity = order.quantity - order.filledQuantity;
             if(equalPriceOrder !== undefined){
-                equalPriceOrder.quantity += order.quantity;
+                equalPriceOrder.quantity += realOrderQuantity;
             }
             else {
-                relevantOrders.push({price: order.price, quantity: order.quantity});
+                relevantOrders.push({price: order.price, quantity: realOrderQuantity});
             }
         });
 
