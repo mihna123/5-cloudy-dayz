@@ -197,7 +197,7 @@ const createTrades = async () => {
                                         "id"                  serial primary key,\
                                         "buyOrderId"          int,\
                                         "sellOrderId"         int,\
-                                        "createdDateTime"     date,\
+                                        "createdDateTime"     timestamp,\
                                         "price"               double precision,\
                                         "quantity"            double precision)');
         console.log('Table trades created succesfully');
