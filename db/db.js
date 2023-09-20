@@ -44,16 +44,20 @@ exports.newOrder = async (order) => {
         let filledQuantity = 0;
         let orderStatus = "OPEN";
         let relevantOrders;
+        let sortf;
         if(order.type === "BUY"){
             relevantOrders = await pool.query("SELECT * FROM orders WHERE\
                                                type = 'SELL' AND \"orderStatus\" = 'OPEN' AND price <= $1",[order.price]);
+            sortf = (a,b) => a-b;
         }
         else {
             relevantOrders = await pool.query("SELECT * FROM orders WHERE\
                                                type = 'BUY' AND \"orderStatus\" = 'OPEN' AND price >= $1",[order.price]);
+            sortf = (a,b) => b-a;
         }
         const n = relevantOrders.rowCount;
         relevantOrders = relevantOrders.rows;
+        relevantOrders.sort(sortf);
         let i = 0;
         while(order.quantity !== filledQuantity && i < n){
             let relevantOrderQuantity = relevantOrders[i].quantity - relevantOrders[i].filledQuantity;
